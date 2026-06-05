@@ -1,12 +1,9 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.SocialPlatforms.Impl;
-using UnityEngine.UI;
 
 public class GameManagerR : MonoBehaviour
 {
-    private int score_save;
     private int score;
     public TMP_Text scoreText;
     public GameObject GameOver_Panel;
@@ -17,7 +14,7 @@ public class GameManagerR : MonoBehaviour
     }
 
     public void Play(){
-        score = 0;
+        score = DatosGlobales.puntajeAcumulado_b;
         scoreText.text = score.ToString();
         GameOver_Panel.SetActive(false);
 
@@ -39,6 +36,12 @@ public class GameManagerR : MonoBehaviour
     public void IncreaseScore(int amount = 1)
     {
         score += amount;
+        DatosGlobales.puntajeAcumulado_b = score;
         scoreText.text = score.ToString();
+    }
+
+    public static class DatosGlobales
+    {
+        public static int puntajeAcumulado_b = 0;
     }
 }
