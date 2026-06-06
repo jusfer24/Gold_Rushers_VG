@@ -69,7 +69,7 @@ public class EnemyController : MonoBehaviour
 
         if (collision.CompareTag("Bala"))
         {
-            gameManager.IncreaseScore();
+            OtorgarPuntos();
             Morir();
             Destroy(collision.gameObject);
         }
