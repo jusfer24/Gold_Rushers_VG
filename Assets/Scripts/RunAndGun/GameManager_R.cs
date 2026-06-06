@@ -4,6 +4,9 @@ using UnityEngine.SceneManagement;
 
 public class GameManagerR : MonoBehaviour
 {
+    private int scoreP1_i = MainMenuController.DatosGlobales.puntajeAcumulado_B;
+    private int scoreP2_i = MainMenuController.DatosGlobales.puntajeAcumulado_R;
+
     private int scoreP1;
     private int scoreP2;
 
@@ -33,11 +36,11 @@ public class GameManagerR : MonoBehaviour
         player1Alive = true;
         player2Alive = true;
 
-        scoreP1 = 0;
-        scoreP2 = 0;
+        scoreP1 = scoreP1_i;
+        scoreP2 = scoreP2_i;
 
-        scoreTextP1.text = "0";
-        scoreTextP2.text = "0";
+        scoreTextP1.text = scoreP1.ToString();
+        scoreTextP2.text = scoreP2.ToString();
 
         GameOver_Panel.SetActive(false);
 
@@ -90,7 +93,18 @@ public class GameManagerR : MonoBehaviour
 
         if (!player1Alive && !player2Alive)
         {
-            GameOver();
+            MainMenuController.DatosGlobales.puntajeAcumulado_B = scoreP1;
+            MainMenuController.DatosGlobales.puntajeAcumulado_R = scoreP2;
+            if(scoreP1 > scoreP2)
+            {
+                SceneManager.LoadScene("Winner_B");
+            }
+            else
+            {
+                SceneManager.LoadScene("Winner_R");
+            }
+
+            //GameOver();
         }
     }
 }

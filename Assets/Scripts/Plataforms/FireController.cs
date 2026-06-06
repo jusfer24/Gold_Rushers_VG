@@ -18,7 +18,7 @@ public class FireController : MonoBehaviour
 
     public void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Player"))
+        if (collision.gameObject.CompareTag("BluePlayer") || collision.gameObject.CompareTag("RedPlayer"))
         {
             ispress = true;
             PlayFire();
@@ -27,7 +27,7 @@ public class FireController : MonoBehaviour
     }
     public void OnCollisionExit2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Player"))
+        if (collision.gameObject.CompareTag("BluePlayer") || collision.gameObject.CompareTag("RedPlayer"))
         {
             ispress = false;
             animator.SetBool("ispressing", ispress);

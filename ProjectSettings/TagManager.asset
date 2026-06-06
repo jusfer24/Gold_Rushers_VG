@@ -10,6 +10,7 @@ TagManager:
   - Ground
   - Bala
   - Muro
+  - RedPlayer
   layers:
   - Default
   - TransparentFX

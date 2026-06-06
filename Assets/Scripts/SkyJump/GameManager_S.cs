@@ -1,142 +1,110 @@
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 public class GameManagerS : MonoBehaviour
 {
     public static GameManagerS instance;
+    private int scoreP1_i = MainMenuController.DatosGlobales.puntajeAcumulado_B;
+    private int scoreP2_i = MainMenuController.DatosGlobales.puntajeAcumulado_R;
 
-    public GameObject gameOverPanel;
-    public TextMeshProUGUI gameOverText;
-    public Button reiniciarButton;
-    public Button menuButton;
-    public Button pauseButton;
-    public TextMeshProUGUI RecordText;
+    private int scoreP1;
+    private int scoreP2;
 
-    private bool gameOverActivo = false;
+    private int score;
 
-    [Header("Monedas GUI")]
-    public int monedas = 0;
-    public TextMeshProUGUI textoMonedas;
+    public TMP_Text scoreText;
+
+    public TMP_Text scoreTextP1;
+    public TMP_Text scoreTextP2;
+
+    private bool player1Alive;
+    private bool player2Alive;
 
     private void Awake()
     {
+        // ESTO ES VITAL: Asignar la instancia para que los demás scripts la encuentren
         if (instance == null)
         {
             instance = this;
         }
         else
         {
-           Destroy(gameObject);
+            Destroy(gameObject);
         }
+        Application.targetFrameRate = 60;
     }
 
-    void Start()
+    private void Start()
     {
-        if (gameOverPanel != null)
-        {
-            gameObject.SetActive(true);
-        }
-
-        if(reiniciarButton != null)
-        {
-            reiniciarButton.onClick.AddListener(ReiniciarEscena);
-        }
-
-        if(menuButton != null)
-        {
-            menuButton.onClick.AddListener(IrAlMenu);
-        }
-
-        CargarMonedas();
-        ActualizarUIMonedas();
+        Play();
     }
 
-    void Update()
+    public void Play()
     {
-        if (gameOverActivo)
-        {
-            if (Input.GetKeyDown(KeyCode.R))
-            {
-                ReiniciarEscena();
-            }
+        player1Alive = true;
+        player2Alive = true;
 
-            if(Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.M))
-            {
-                IrAlMenu();
-            }
-        }
+        scoreP1 = scoreP1_i;
+        scoreP2 = scoreP2_i;
+
+        scoreTextP1.text = scoreP1.ToString();
+        scoreTextP2.text = scoreP2.ToString();
+
+        Time.timeScale = 1f;
     }
 
-    public void AgregarMonedas(int cantidad)
-    {
-        monedas += cantidad;
-        ActualizarUIMonedas();
-        GuardarMonedas();
-    }
-
-    public void ActualizarUIMonedas()
-    {
-        if (textoMonedas != null)
-        {
-            textoMonedas.text = "x " + monedas.ToString();
-        }
-    }
-
-    public void GuardarMonedas()
-    {
-        PlayerPrefs.SetInt("Monedas", monedas);
-        PlayerPrefs.Save();
-    }
-
-    public void CargarMonedas()
-    {
-        monedas = PlayerPrefs.GetInt("Monedas", 0);
-    }
-
-    public void GameOver()
-    {
-        if (gameOverActivo)
-        {
-            return;
-        }
-
-        gameOverActivo=true;
-
-        if(gameOverPanel != null)
-        {
-            gameOverPanel.SetActive(true);
-        }
-
-        if (pauseButton != null)
-        {
-            pauseButton.gameObject.SetActive(false);
-        }
-
-        if (RecordText != null)
-        {
-            RecordText.gameObject.SetActive(false);
-        }
-
-        //if(gameOverText != null)
-        //{
-        //    gameOverText.text = "GAME OVER \n \nR - Reiniciar\nESC - Menu Principal";
-        //}
-    }
-
-    public void ReiniciarEscena()
+    public void RestartGame()
     {
         Time.timeScale = 1f;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
-    public void IrAlMenu()
+    public void IncreaseScorePlayer1()
     {
-        Time.timeScale=1f;
-        SceneManager.LoadScene("MainMenu");
+        scoreP1++;
+        scoreTextP1.text = scoreP1.ToString();
+    }
+
+    public void IncreaseScorePlayer2()
+    {
+        scoreP2++;
+        scoreTextP2.text = scoreP2.ToString();
+    }
+
+    public void IncreaseScore(int amount = 1)
+    {
+        score += amount;
+        if (scoreText != null)
+        {
+            scoreText.text = score.ToString();
+        }
+    }
+
+    public void GameOver(){
+
+
+    }
+    public void PlayerDied(string tagJugador)
+    {
+        if (tagJugador == "BluePlayer")
+        {
+            player1Alive = false;
+            Debug.Log("a");
+        }
+        else if (tagJugador == "RedPlayer")
+        {
+            player2Alive = false;
+            Debug.Log("as");
+        }
+
+        if (!player1Alive && !player2Alive)
+        {
+            Debug.Log("asa");
+            MainMenuController.DatosGlobales.puntajeAcumulado_B = scoreP1;
+            MainMenuController.DatosGlobales.puntajeAcumulado_R = scoreP2;
+            MainMenuController.DatosGlobales.escenaDestino = "FlappyBird";
+            SceneManager.LoadScene("Intermade");
+        }
     }
 }
-
-

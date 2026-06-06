@@ -1,36 +1,39 @@
 using UnityEngine;
 
+[RequireComponent(typeof(Camera))]
 public class CameraController_S : MonoBehaviour
 {
-    public Transform objetivo;
-    public float velocidadCamara = 0.125f;
-    public Vector3 desplazamiento;
+    public float velocidadSubida = 2.0f;
+    public float limiteY = 20f;
 
-    // Usaremos esta variable para recordar dónde pusiste la cámara al inicio
-    private float posicionXFija;
-    private float posicionZFija;
+    public Color colorFondoInicial = Color.blue;
+    public Color colorFondoFinal = Color.black;
+
+    private Camera camara;
+    private float posicionYInicial;
 
     void Start()
     {
-        posicionXFija = transform.position.x;
-        posicionZFija = transform.position.z;
+        camara = GetComponent<Camera>();
+        posicionYInicial = transform.position.y;
 
-        // Opcional: Acomodar la cámara en Y al inicio
-        if (objetivo != null)
-        {
-            transform.position = new Vector3(posicionXFija, objetivo.position.y + desplazamiento.y, posicionZFija);
-        }
+        camara.clearFlags = CameraClearFlags.SolidColor;
+        camara.backgroundColor = colorFondoInicial;
     }
 
-    private void LateUpdate()
+    void LateUpdate()
     {
-        if (objetivo == null) return;
-        Vector3 posicionDeseada = new Vector3(posicionXFija, objetivo.position.y + desplazamiento.y, posicionZFija);
+        if (transform.position.y < limiteY)
+        {
+            transform.position += Vector3.up * velocidadSubida * Time.deltaTime;
 
-        // Hacemos la transición suave hacia esa nueva posición
-        Vector3 posicionSuavizada = Vector3.Lerp(transform.position, posicionDeseada, velocidadCamara);
-
-        // Aplicamos el movimiento
-        transform.position = posicionSuavizada;
+            float progreso = (transform.position.y - posicionYInicial) / (limiteY - posicionYInicial);
+            camara.backgroundColor = Color.Lerp(colorFondoInicial, colorFondoFinal, progreso);
+        }
+        else
+        {
+            transform.position = new Vector3(transform.position.x, limiteY, transform.position.z);
+            camara.backgroundColor = colorFondoFinal;
+        }
     }
 }

@@ -2,21 +2,16 @@ using UnityEngine;
 
 public class BadPlataforms : MonoBehaviour
 {
-    public Transform player;
-    void Start()
-    {
-        
-    }
-    void Update()
-    {
-        
-    }
-
+    private GameManagerS gamemaagerS;
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Player"))
+        if (collision.gameObject.CompareTag("BluePlayer") || collision.gameObject.CompareTag("RedPlayer"))
         {
-            collision.gameObject.GetComponent<PlayerController>().MorirPlayer();
+            // Extraemos el script del jugador con el que chocamos
+            PlayerController jugador = collision.gameObject.GetComponent<PlayerController>();
+
+            // Activamos su función de morir
+            jugador.MorirPlayer();
         }
     }
 }
